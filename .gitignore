@@ -1,0 +1,7 @@
+*.pro.user
+Makefile*
+debug
+release
+output*
+result.txt
+*.pdb

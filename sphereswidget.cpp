@@ -4,9 +4,26 @@
 #include <QTextStream>
 #include <qmath.h>
 
-SpheresWidget::SpheresWidget(QWidget *parent) : QGLWidget(parent),
-    frameCount(0), frameToStartCalculatingFps(20), frameToStopCalculatingFps(1000), fps(0)
-{}
+SpheresWidget::SpheresWidget(QWidget *parent, QString const & inFileName)
+    :
+    QGLWidget(parent),
+    frameCount(0), sphereCount(10)
+{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 
 void SpheresWidget::initializeGL() {
    qglClearColor(Qt::black);
@@ -22,20 +39,23 @@ void SpheresWidget::resizeGL(int nWidth, int nHeight) {
 }
 
 void SpheresWidget::paintGL() {
-    if (frameCount > frameToStartCalculatingFps && !beginTime.isValid()) {
-        beginTime = QDateTime::currentDateTime();
-    }
-    if (frameCount > frameToStopCalculatingFps && fps == 0) {
-        fps = 1000 * (float)(frameToStopCalculatingFps - frameToStartCalculatingFps) / beginTime.msecsTo(QDateTime::currentDateTime());
+    /// TODO: сделать более точный подсчет времени - а то среднее время кадра = 0;
+    if (frameCount == 11) {
         QFile result("result.txt");
         result.open(QFile::WriteOnly);
 
         QTextStream resultStream(&result);
-        resultStream << fps;
+        float medianeMsecsPerFrame = 0;
+        resultStream << "msecs per frame: ";
+        foreach (float msecsValue, msecInFrameList) {
+            medianeMsecsPerFrame += msecsValue;
+            resultStream << msecsValue << " ";
+        }
+        resultStream << endl << "average msecs per frame: " << medianeMsecsPerFrame / 10;
+        resultStream << endl << "Mspheres per second: " << sphereCount / medianeMsecsPerFrame;
+        close();
     }
-
-
-    ++frameCount;
+    QDateTime beginTime = QDateTime::currentDateTime();
 
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -95,4 +115,7 @@ void SpheresWidget::paintGL() {
     glVertex2f(-0.6,-0.8);
     glVertex2f(0.6,-0.8);
     glEnd();
+    if (frameCount)
+        msecInFrameList.append(beginTime.msecsTo(QDateTime::currentDateTime()));
+    ++frameCount;
 }
