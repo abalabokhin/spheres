@@ -40,57 +40,12 @@ void SpheresWidget::resizeGL(int nWidth, int nHeight) {
     glLoadIdentity();
 }
 
-void DrawCube(int x, int y, int z, int size){
-    glColor3f(1,0,0);
-    glBegin(GL_POLYGON);
-        glVertex3f(x+size,y+size,z+size);
-        glVertex3f(x-size,y+size,z+size);
-        glVertex3f(x-size,y-size,z+size);
-        glVertex3f(x+size,y-size,z+size);
-    glEnd();
-    glColor3f(0,1,0);
-    glBegin(GL_POLYGON);
-        glVertex3f(x+size,y+size,z-size);
-        glVertex3f(x-size,y+size,z-size);
-        glVertex3f(x-size,y-size,z-size);
-        glVertex3f(x+size,y-size,z-size);
-    glEnd();
-    glColor3f(0,0,1);
-    glBegin(GL_POLYGON);
-        glVertex3f(x+size,y+size,z+size);
-        glVertex3f(x-size,y+size,z+size);
-        glVertex3f(x-size,y+size,z-size);
-        glVertex3f(x+size,y+size,z-size);
-    glEnd();
-    glColor3f(1,1,0);
-    glBegin(GL_POLYGON);
-        glVertex3f(x+size,y-size,z+size);
-        glVertex3f(x-size,y-size,z+size);
-        glVertex3f(x-size,y-size,z-size);
-        glVertex3f(x+size,y-size,z-size);
-    glEnd();
-    glColor3f(1,0,1);
-    glBegin(GL_POLYGON);
-        glVertex3f(x+size,y+size,z+size);
-        glVertex3f(x+size,y-size,z+size);
-        glVertex3f(x+size,y-size,z-size);
-        glVertex3f(x+size,y+size,z-size);
-    glEnd();
-    glColor3f(0,0,1);
-    glBegin(GL_POLYGON);
-        glVertex3f(x-size,y+size,z+size);
-        glVertex3f(x-size,y-size,z+size);
-        glVertex3f(x-size,y-size,z-size);
-        glVertex3f(x-size,y+size,z-size);
-    glEnd();
-}
-
 void SpheresWidget::paintGL() {
     /// TODO: если возможно - подсчитывать время более точно в микросекундах
     /// TODO: выбрать самую можную видео карту - хз как
 
     /// time to save results and exit.
-    if (frameCount == 110000) {
+    if (frameCount == 11000) {
         float performance = 0;
         {
             QFile fullResult(fullOutputTxtFileName);
@@ -103,7 +58,7 @@ void SpheresWidget::paintGL() {
                 fullResultStream << msecsValue << " ";
             }
             fullResultStream << endl << "average msecs per frame: " << medianeMsecsPerFrame / 10;
-            performance = spheres.size() / medianeMsecsPerFrame;
+            performance = spheres.size() / (1000 * medianeMsecsPerFrame);
             fullResultStream << endl << "Mspheres per second: " << performance;
         }
         {
@@ -133,63 +88,94 @@ void SpheresWidget::paintGL() {
 void SpheresWidget::doPaint()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    glRotatef(0.01, 1, 1, 1);
-    //    glPointSize(20);
-    //    glLineWidth(8);
-    //    glEnable(GL_POINT_SMOOTH);
+//    glRotatef(0.01, 1, 1, 1);
+//    glPointSize(20);
+//    glLineWidth(8);
+//    glEnable(GL_POINT_SMOOTH);
 
-    //    glColor3f(0.9,0.5,0.5);
+//    glColor3f(0.9,0.5,0.5);
 
-    //    glBegin(GL_POINTS);
-    //    glVertex2f(-0.3,0.8);
-    //    glVertex2f(0.0,0.8);
-    //    glVertex2f(0.3,0.8);
-    //    glEnd();
+//    glBegin(GL_POINTS);
+//    glVertex2f(-0.3,0.8);
+//    glVertex2f(0.0,0.8);
+//    glVertex2f(0.3,0.8);
+//    glEnd();
 
-    //    glColor3f(0.7,1.0,0.7);
+//    glColor3f(0.7,1.0,0.7);
 
-    //    glBegin(GL_LINES);
-    //    glVertex2f(-0.3,0.6);
-    //    glVertex2f(0.3,0.6);
-    //    glVertex2f(-0.6,0.2);
-    //    glVertex2f(0.6,0.2);
-    //    glVertex2f(-0.6,-0.2);
-    //    glVertex2f(0.6,-0.2);
-    //    glEnd();
+//    glBegin(GL_LINES);
+//    glVertex2f(-0.3,0.6);
+//    glVertex2f(0.3,0.6);
+//    glVertex2f(-0.6,0.2);
+//    glVertex2f(0.6,0.2);
+//    glVertex2f(-0.6,-0.2);
+//    glVertex2f(0.6,-0.2);
+//    glEnd();
 
-    //    glDisable(GL_POINT_SMOOTH);
-    //    glColor3f(0.5,0.5,1.0);
+//    glDisable(GL_POINT_SMOOTH);
+//    glColor3f(0.5,0.5,1.0);
 
-    //    glBegin(GL_POINTS);
-    //    glVertex2f(-0.3,0.4);
-    //    glVertex2f(0.0,0.4);
-    //    glVertex2f(0.3,0.4);
-    //    glEnd();
+//    glBegin(GL_POINTS);
+//    glVertex2f(-0.3,0.4);
+//    glVertex2f(0.0,0.4);
+//    glVertex2f(0.3,0.4);
+//    glEnd();
 
-    //    glPointSize(10);
-    //    glEnable(GL_POINT_SMOOTH);
-    //    glColor3f(0.5,0.5,0.5);
+//    glPointSize(10);
+//    glEnable(GL_POINT_SMOOTH);
+//    glColor3f(0.5,0.5,0.5);
 
-    //    GLfloat x=-0.6;
-    //    glBegin(GL_POINTS);
-    //    for(int i=0;i<7;i++)
-    //    {
-    //     glVertex2f(x,0.0);
-    //     x+=0.2;
-    //    }
-    //    glEnd();
+//    GLfloat x=-0.6;
+//    glBegin(GL_POINTS);
+//    for(int i=0;i<7;i++)
+//    {
+//     glVertex2f(x,0.0);
+//     x+=0.2;
+//    }
+//    glEnd();
 
-    //    glLineWidth(2);
-    //    glColor3f(1.0,1.0,1.0);
+//    glLineWidth(2);
+//    glColor3f(1.0,1.0,1.0);
 
-    //    glBegin(GL_LINES);
-    //    glVertex2f(-0.6,-0.4);
-    //    glVertex2f(0.6,-0.4);
-    //    glVertex2f(-0.6,-0.6);
-    //    glVertex2f(0.6,-0.6);
-    //    glVertex2f(-0.6,-0.8);
-    //    glVertex2f(0.6,-0.8);
-    //    glEnd();
-    DrawCube(1,1,1,1);
+//    glBegin(GL_LINES);
+//    glVertex2f(-0.6,-0.4);
+//    glVertex2f(0.6,-0.4);
+//    glVertex2f(-0.6,-0.6);
+//    glVertex2f(0.6,-0.6);
+//    glVertex2f(-0.6,-0.8);
+//    glVertex2f(0.6,-0.8);
+//    glEnd();
+//    glFinish();
+    //DrawSphere(1,1,1,1);
+
+#define X .525731112119133606
+#define Z .850650808352039932
+
+GLfloat vdata[12][3] = {
+      {-X,0.0,Z},{X,0.0,Z},{-X,0.0,-Z},{X,0.0,-Z},
+      {0.0,Z,X},{0.0,Z,-X},{0.0,-Z,X},{0.0,-Z,-X},
+      {Z,X,0.0},{-Z,X,0.0},{Z,-X,0.0},{-Z,-X,0.0}
+};
+
+GLuint tindices[20][3] = {
+      {1,4,0},{4,9,0},{4,5,9},{8,5,4},{1,8,4},
+      {1,10,8},{10,3,8},{8,3,5},{3,2,5},{3,7,2},
+      {3,10,7},{10,6,7},{6,11,7},{6,0,11},{6,1,0},
+      {10,1,6},{11,0,9},{2,11,9},{5,2,9},{11,2,7}
+};
+
+int i;
+
+glBegin(GL_TRIANGLES);
+      for(i=0;i<20;i++)
+{
+      //Здесь помещается информация о цвете
+
+      glVertex3fv(&vdata[tindices[i][0]][0]);
+      glVertex3fv(&vdata[tindices[i][1]][0]);
+      glVertex3fv(&vdata[tindices[i][2]][0]);
+}
+glEnd();
+
 
 }
