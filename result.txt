@@ -1,3 +1,0 @@
-msecs per frame: 1 0 0 0 0 0 0 0 0 0 
-average msecs per frame: 0.1
-Mspheres per second: 10

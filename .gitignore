@@ -2,6 +2,7 @@
 Makefile*
 debug
 release
-output*
+*output*
+input*
 result.txt
 *.pdb
