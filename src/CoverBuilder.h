@@ -17,6 +17,7 @@ struct PointKoords {
 	}
 };
 
+/// класс для построения покрытия для каждой из ячеек и определения плоскостей через которые которые не может пройти взгляд.
 class CoverBuilder
 {
 public:
@@ -24,10 +25,10 @@ public:
 	~CoverBuilder(void);
 
 	void ClearAllPlanes();
-
+	
 	bool GetApropriateCellsNumbers(std::set<int> & result);
 	void FinishCovering();
-
+	/// функции для добавления квадрата (урезанный круг) к разным плоскостям.
 	void AddSquareToXPlane(int planeNumber, float centreX, float centreY, float radius);
 	void AddSquareToYPlane(int planeNumber, float centreX, float centreY, float radius);
 	void AddSquareToZPlane(int planeNumber, float centreX, float centreY, float radius);

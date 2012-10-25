@@ -134,16 +134,18 @@ void GLWindowRender(const GLWindow *window)
 	ASSERT(window);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	/// вычисление произведения матрицы камеры и матрицы проекции
 	CameraSetup(shaderProgram, mainCamera);
-	
+	/// ячейки, сферы из которых мы будем рендерить.
 	std::set<int> cellsToRender;
 	if (!coverBuilder.GetApropriateCellsNumbers(cellsToRender)) {
+		/// рендер всех ячеек
 		for(int i = 0; i < REDUCED_NUM_SPHERES; ++i) {
 			MeshSetup(shaderProgram, spheres[i]);
 			MeshRender(mesh);
 		}
 	} else {
+		/// рендер только выбранных ячеек
 		for (auto i = cellsToRender.begin(); i != cellsToRender.end(); ++i) {
 			long * cell = matrixInCells[*i];
 			for (int matrixNumber = cell[0]; matrixNumber < cell[1]; ++matrixNumber) {
@@ -190,15 +192,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR lpCmdLine, int)
 	int windowWidht = 1024;
 	int windowHeight = 1024;
 
-
 	if (!GLWindowCreate(L"Spheres", windowWidht, windowHeight))
 		return 1;
-
+	/// 
 	SphereKoords *allSpheres = new SphereKoords[MAX_NUM_SPHERES];
-
+	/// считывание сфер из файла
 	REAL_NUM_SPHERES = readSpheresDataFromFile(inputFileName, allSpheres, MAX_NUM_SPHERES);
 	//generateRandomSpheres(allSpheres, REAL_NUM_SPHERES);
-
+	
 	SphereWorld * sphereWorlds = new SphereWorld[SPHERE_WORLD_NUMBER];
 	SphereWorld finalWorld;
 	
@@ -207,6 +208,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR lpCmdLine, int)
 	LOG_DEBUG ("Take into account, that time for preprocessing wasn't limited.\n");
 	LOG_DEBUG ("By the way, you can see the progress in this file\n");
 	auto beginTime = GetTickCount();
+	/// вычисление сфер внутри других сфер в несколько потоков по блокам (мирам)
 	for (int spheresInitialNumber = 0; spheresInitialNumber < REAL_NUM_SPHERES; spheresInitialNumber += SPHERES_PROCESSING_STEP) {
 		long spheresToProcess = spheresInitialNumber + SPHERES_PROCESSING_STEP >= REAL_NUM_SPHERES ? REAL_NUM_SPHERES - spheresInitialNumber : SPHERES_PROCESSING_STEP;
 		LOG_DEBUG ("processing spheres from %i to %i, time: %i\n", spheresInitialNumber, spheresInitialNumber + spheresToProcess , GetTickCount() - beginTime);	
@@ -226,20 +228,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR lpCmdLine, int)
 		for (int i = 0; i < THREADS_COUNT; i++) {
 			WaitForSingleObject(hHandles[i],INFINITE);
 		}
-
+		/// склейка миров из разных потоков
 		for (int degree = (int)(log((double)worldsPerThread) / log(2.0)); degree < log((double)SPHERE_WORLD_NUMBER) / log(2.0); ++degree) {
 			int step = (int) pow(2.0f, (int)degree);
 			for (int worldNumber = 0; worldNumber < SPHERE_WORLD_NUMBER; worldNumber += step * 2) {
 				sphereWorlds[worldNumber].AddSphereWorldInSeveralThreads(sphereWorlds[worldNumber + step], THREADS_COUNT);
 			}
 		}
-
+		/// простое (без вычислений) добавление сфер из разных миров к финальному миру - сделано для увеличение скорости предобработки.
 		finalWorld.SimpleAddSphereWorld(sphereWorlds[0]);
 		clearWorlds(sphereWorlds, SPHERE_WORLD_NUMBER);
 	}
 
 	LOG_DEBUG("sphere amount after removing the spheres located insides others: %i, time %i\n", finalWorld.GetCurrentSize(), GetTickCount() - beginTime);
 	LOG_DEBUG("started checking how spheres cover cube (0,0,0 - 1,1,1)\n");
+	/// проверка насколько сферы покрывают все стороны каждой ячейки
 	finalWorld.GenerateCover(coverBuilder);
 	LOG_DEBUG("covering finished, time %i\n", GetTickCount() - beginTime);
 	LOG_DEBUG("creating the main window, etc, and started rendering\n");
@@ -249,15 +252,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR lpCmdLine, int)
 	spheres = new mat4[REDUCED_NUM_SPHERES];
 	finalWorld.GenerateMatrixInCells(matrixInCells, spheres);
 
-	// вектор со временами отрисовки фремов
+	/// вектор со временами отрисовки фремов
 	std::vector<double> msecsPerFrameList;
 
 	int nSize = windowWidht * windowHeight * 3;
 	GLubyte *pixels = new GLubyte [nSize];
-
+	/// старт петли сообщений
 	int result = GLWindowMainLoop(msecsPerFrameList, pixels);
 
-	// сохранение всех данных в файлы
+	/// сохранение всех данных в файлы
 	if (pixels) {
 		SaveBMP(pixels, windowWidht, windowHeight, nSize, outputBmpFileName.c_str());	
 	}

@@ -325,7 +325,7 @@ int GLWindowMainLoop(std::vector<double> & timePerFrameList, GLubyte * pixels)
 
 			GLWindowRender(&g_window);
 			glEndQuery(GL_TIME_ELAPSED);
-
+			/// вычисления времени отрисовки
 			GLint done = 0;
 			while (!done) {
 				glGetQueryObjectiv(query, 
@@ -333,13 +333,13 @@ int GLWindowMainLoop(std::vector<double> & timePerFrameList, GLubyte * pixels)
 				&done);
 			}
  
-			// get the query result
+			// получение времени отрисовки
 			glGetQueryObjectui64v(query, GL_QUERY_RESULT, &elapsed_time);
 
 			if (timePerFrameList.size() < 10 && frameCount >= 2) {
 				timePerFrameList.push_back(elapsed_time / 1000000.0);
 			}
-
+			/// если отрисовано 10 ферймов то получение картинки и выход.
 			if (timePerFrameList.size() == 10) {
 				if (pixels) {
 					RECT    rect;

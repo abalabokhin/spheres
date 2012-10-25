@@ -10,10 +10,6 @@ struct Mesh
 {
 	GLuint   vao, vbo[2];
 	uint32_t vcount, icount;
-
-	//vec3 position;
-	//mat3 rotation;
-	//vec3 size;
 };
 
 void MeshCreatePlane(Mesh &mesh, const vec3 &position, float size);

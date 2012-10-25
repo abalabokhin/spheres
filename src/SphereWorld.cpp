@@ -16,7 +16,8 @@ SphereWorld::~SphereWorld(void)
 }
 
 void SphereWorld::GenerateCover(CoverBuilder & builder) {
-	/// груба€ проверка - верна только дл€ рандомно сгенерированных сфер - если сфер в каждой €чейке > 100, то считаем что покрытие посто€нно.
+	/// груба€ проверка - верна только дл€ рандомно сгенерированных сфер - если сфер в каждой €чейке > 100, то считаем что покрытие посто€нно. 
+	/// Ёто надо убрать, но оно заметно сокращает врем€ начальной инициализации, а на скорость отрисовки не вли€ет.
 	bool allCellsFull = true;
 	for (int i = 0; i < 1000; i++) {
 		if (cells[i].size() < 100) {
@@ -42,7 +43,7 @@ void SphereWorld::GenerateCover(CoverBuilder & builder) {
 		float planeY2 = 0.1f * (numberY + 1);
 		float planeZ1 = 0.1f * numberZ;
 		float planeZ2 = 0.1f * (numberZ + 1);
-
+		/// убирание квадратов из плоскостек в зависимости от пересечени€ сферой стороны €чейки.
 		for (auto sphere = cells[i].begin(); sphere != cells[i].end(); ++sphere) {
 			float r2 = (*sphere)->r * (*sphere)->r;
 			if (r2 > ((*sphere)->x - planeX1) * ((*sphere)->x - planeX1))
@@ -177,6 +178,8 @@ void SphereWorld::Clear() {
 		cells[i].clear();
 	}
 }
+
+/// набор классов дл€ склейки сфер многопоточно
 
 enum CellManagerResult {STOP, WAIT, DO};
 

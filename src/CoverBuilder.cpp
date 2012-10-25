@@ -23,7 +23,8 @@ void CoverBuilder::ClearAllPlanes() {
 		planesZ[i].clear();
 	}
 }
-
+/// TODO - передават положение камеры для настояцего вычисления
+/// взять плоскости исходя из того что мы находимся в точке -1, -1, -1
 bool CoverBuilder::GetApropriateCellsNumbers(std::set<int> & result) {
 	if (isSieve)
 		return false;
